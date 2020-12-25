@@ -1,6 +1,6 @@
 [package]
 name = "hcal"
-version = "0.1.9"
+version = "0.1.10"
 description = "Hexadecimal calendar for terminal"
 license = "MIT"
 authors = ["0xflotus"]
@@ -17,3 +17,7 @@ readme = "README.md"
 [dependencies]
 clap = "3.0.0-beta.2"
 chrono = "0.4"
+
+[[bin]]
+
+name = "hcal"
