@@ -4,25 +4,25 @@ use std::vec::Vec;
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.1.11")
+        .version("0.1.12")
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("year")
                 .about("Sets the year")
                 .required(false)
-                .index(1),
+                .index(1_u64),
         )
         .arg(
             Arg::new("month")
                 .about("Sets the month")
                 .required(false)
-                .index(2),
+                .index(2_u64),
         )
         .arg(
             Arg::new("day")
                 .about("Sets the day")
                 .required(false)
-                .index(3),
+                .index(3_u64),
         )
         .get_matches();
 
@@ -39,7 +39,7 @@ fn main() {
                 hcal(
                     year.parse::<i32>().unwrap(),
                     month.parse::<u32>().unwrap(),
-                    1,
+                    1_u32,
                     false,
                 );
             }
@@ -57,7 +57,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
     let (_is_common_era, year) = now.year_ce();
     let month = now.month();
     let day = now.day();
-    let start_date = NaiveDate::from_ymd(year as i32, month, 1);
+    let start_date = NaiveDate::from_ymd(year as i32, month, 1_u32);
     let days_from_monday = start_date.weekday().num_days_from_monday();
     println!(
         "\t\t{}\n\t\t  {}\n",
@@ -66,9 +66,9 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
     );
 
     println!("{}", "Mon\tTue\tWed\tThu\tFri\tSat\tSun");
-    let mut end = 7 - days_from_monday;
+    let mut end = 7_u32 - days_from_monday;
     let mut vec = Vec::new();
-    for x in 1..=end {
+    for x in 1_u32..=end {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
         if x == day && show_day {
@@ -84,9 +84,9 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
         " \t".repeat(days_from_monday as usize),
         vec.join("\t")
     );
-    end = end + 1;
+    end = end + 1_u32;
     vec = Vec::new();
-    for x in end..end + 7 {
+    for x in end..end + 7_u32 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
         if x == day && show_day {
@@ -98,9 +98,9 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
         }
     }
     println!("{}", vec.join("\t"));
-    end = end + 7;
+    end = end + 7_u32;
     vec = Vec::new();
-    for x in end..end + 7 {
+    for x in end..end + 7_u32 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
         if x == day && show_day {
@@ -112,9 +112,9 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
         }
     }
     println!("{}", vec.join("\t"));
-    end = end + 7;
+    end = end + 7_u32;
     vec = Vec::new();
-    for x in end..end + 7 {
+    for x in end..end + 7_u32 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
         if x == day && show_day {
@@ -126,9 +126,9 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
         }
     }
     println!("{}", vec.join("\t"));
-    end = end + 7;
+    end = end + 7_u32;
     vec = Vec::new();
-    if get_days_from_month(year as i32, month as u32) as u32 - end < 7 {
+    if get_days_from_month(year as i32, month as u32) as u32 - end < 7_u32 {
         for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
@@ -142,7 +142,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
         }
         println!("{}", vec.join("\t"));
     } else {
-        for x in end..=end + 6 {
+        for x in end..=end + 6_u32 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
             if x == day && show_day {
@@ -155,7 +155,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
         }
         println!("{}", vec.join("\t"));
         vec = Vec::new();
-        for x in end + 7..=get_days_from_month(year as i32, month as u32) as u32 {
+        for x in end + 7_u32..=get_days_from_month(year as i32, month as u32) as u32 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
             if x == day && show_day {
@@ -174,15 +174,15 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
 fn get_days_from_month(year: i32, month: u32) -> i64 {
     NaiveDate::from_ymd(
         match month {
-            12 => year + 1,
+            12_u32 => year + 1_i32,
             _ => year,
         },
         match month {
-            12 => 1,
-            _ => month + 1,
+            12_u32 => 1_u32,
+            _ => month + 1_u32,
         },
-        1,
+        1_u32,
     )
-    .signed_duration_since(NaiveDate::from_ymd(year, month, 1))
+    .signed_duration_since(NaiveDate::from_ymd(year, month, 1_u32))
     .num_days()
 }
