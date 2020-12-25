@@ -1,6 +1,6 @@
 [package]
 name = "hcal"
-version = "0.1.0"
+version = "0.1.1"
 description = "Hexadecimal calendar"
 license = "MIT"
 authors = ["0xflotus <0xflotus@gmail.com>"]
