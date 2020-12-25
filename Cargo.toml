@@ -1,11 +1,17 @@
 [package]
 name = "hcal"
-version = "0.1.6"
+version = "0.1.7"
 description = "Hexadecimal calendar for terminal"
 license = "MIT"
 authors = ["0xflotus"]
 edition = "2018"
 
+homepage = "https://github.com/0xflotus/hcal"
+repository = "https://github.com/0xflotus/hcal"
+keywords = ["cli", "calendars", "hexadecimal"]
+categories = ["command-line-utilities"]
+license-file = "LICENSE"
+readme = "README.md"
 exclude = ["README.md"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
