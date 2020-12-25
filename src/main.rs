@@ -4,8 +4,7 @@ use std::vec::Vec;
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.1.5")
-        .author("0xflotus")
+        .version("0.1.6")
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("year")
@@ -34,20 +33,26 @@ fn main() {
                     year.parse::<i32>().unwrap(),
                     month.parse::<u32>().unwrap(),
                     day.parse::<u32>().unwrap(),
+                    true,
                 );
             } else {
-                println!("Please set a day.");
+                hcal(
+                    year.parse::<i32>().unwrap(),
+                    month.parse::<u32>().unwrap(),
+                    1,
+                    false,
+                );
             }
         } else {
             println!("Please set a month.");
         }
     } else {
         let now = Utc::now();
-        hcal(now.year(), now.month(), now.day());
+        hcal(now.year(), now.month(), now.day(), true);
     }
 }
 
-fn hcal(year: i32, month: u32, day: u32) {
+fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
     let now = NaiveDate::from_ymd(year, month, day);
     let (_is_common_era, year) = now.year_ce();
     let month = now.month();
@@ -66,7 +71,7 @@ fn hcal(year: i32, month: u32, day: u32) {
     for x in 1..=end {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
-        if x == day {
+        if x == day && show_day {
             vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
         } else if weekday == Weekday::Sat || weekday == Weekday::Sun {
             vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
@@ -84,7 +89,7 @@ fn hcal(year: i32, month: u32, day: u32) {
     for x in end..end + 7 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
-        if x == day {
+        if x == day && show_day {
             vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
         } else if weekday == Weekday::Sat || weekday == Weekday::Sun {
             vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
@@ -98,7 +103,7 @@ fn hcal(year: i32, month: u32, day: u32) {
     for x in end..end + 7 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
-        if x == day {
+        if x == day && show_day {
             vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
         } else if weekday == Weekday::Sat || weekday == Weekday::Sun {
             vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
@@ -112,7 +117,7 @@ fn hcal(year: i32, month: u32, day: u32) {
     for x in end..end + 7 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
         let weekday = the_day.weekday();
-        if x == day {
+        if x == day && show_day {
             vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
         } else if weekday == Weekday::Sat || weekday == Weekday::Sun {
             vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
@@ -127,7 +132,7 @@ fn hcal(year: i32, month: u32, day: u32) {
         for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
-            if x == day {
+            if x == day && show_day {
                 vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
             } else if weekday == Weekday::Sat || weekday == Weekday::Sun {
                 vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
@@ -140,7 +145,7 @@ fn hcal(year: i32, month: u32, day: u32) {
         for x in end..=end + 6 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
-            if x == day {
+            if x == day && show_day {
                 vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
             } else if weekday == Weekday::Sat || weekday == Weekday::Sun {
                 vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
@@ -153,7 +158,7 @@ fn hcal(year: i32, month: u32, day: u32) {
         for x in end + 7..=get_days_from_month(year as i32, month as u32) as u32 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
-            if x == day {
+            if x == day && show_day {
                 vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
             } else if weekday == Weekday::Sat || weekday == Weekday::Sun {
                 vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
