@@ -4,7 +4,7 @@ use std::vec::Vec;
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.1.4")
+        .version("0.1.5")
         .author("0xflotus")
         .about("A hexadecimal calendar")
         .arg(
