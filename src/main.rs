@@ -52,10 +52,10 @@ fn main() {
                 for x in 1..=end {
                     let the_day = NaiveDate::from_ymd(year as i32, month, x);
                     let weekday = the_day.weekday();
-                    if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-                    } else if x == day {
+                    if x == day {
                         vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                    } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
                     } else {
                         vec.push(format!("{:#04x}", x));
                     }
@@ -70,10 +70,10 @@ fn main() {
                 for x in end..end + 7 {
                     let the_day = NaiveDate::from_ymd(year as i32, month, x);
                     let weekday = the_day.weekday();
-                    if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-                    } else if x == day {
+                    if x == day {
                         vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                    } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
                     } else {
                         vec.push(format!("{:#04x}", x));
                     }
@@ -84,10 +84,10 @@ fn main() {
                 for x in end..end + 7 {
                     let the_day = NaiveDate::from_ymd(year as i32, month, x);
                     let weekday = the_day.weekday();
-                    if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-                    } else if x == day {
+                    if x == day {
                         vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                    } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
                     } else {
                         vec.push(format!("{:#04x}", x));
                     }
@@ -98,10 +98,10 @@ fn main() {
                 for x in end..end + 7 {
                     let the_day = NaiveDate::from_ymd(year as i32, month, x);
                     let weekday = the_day.weekday();
-                    if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-                    } else if x == day {
+                    if x == day {
                         vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                    } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
                     } else {
                         vec.push(format!("{:#04x}", x));
                     }
@@ -109,18 +109,49 @@ fn main() {
                 println!("{}", vec.join("\t"));
                 end = end + 7;
                 vec = Vec::new();
-                for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
-                    let the_day = NaiveDate::from_ymd(year as i32, month, x);
-                    let weekday = the_day.weekday();
-                    if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                        vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-                    } else if x == day {
-                        vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-                    } else {
-                        vec.push(format!("{:#04x}", x));
+                if get_days_from_month(year as i32, month as u32) as u32 - end < 7 {
+                    for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
+                        let the_day = NaiveDate::from_ymd(year as i32, month, x);
+                        let weekday = the_day.weekday();
+                        if x == day {
+                            vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                        } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun
+                        {
+                            vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
+                        } else {
+                            vec.push(format!("{:#04x}", x));
+                        }
                     }
+                    println!("{}", vec.join("\t"));
+                } else {
+                    for x in end..=end + 6 {
+                        let the_day = NaiveDate::from_ymd(year as i32, month, x);
+                        let weekday = the_day.weekday();
+                        if x == day {
+                            vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                        } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun
+                        {
+                            vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
+                        } else {
+                            vec.push(format!("{:#04x}", x));
+                        }
+                    }
+                    println!("{}", vec.join("\t"));
+                    vec = Vec::new();
+                    for x in end + 7..=get_days_from_month(year as i32, month as u32) as u32 {
+                        let the_day = NaiveDate::from_ymd(year as i32, month, x);
+                        let weekday = the_day.weekday();
+                        if x == day {
+                            vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                        } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun
+                        {
+                            vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
+                        } else {
+                            vec.push(format!("{:#04x}", x));
+                        }
+                    }
+                    println!("{}", vec.join("\t"));
                 }
-                println!("{}", vec.join("\t"));
             } else {
                 println!("Please provide a day.");
             }
@@ -146,10 +177,10 @@ fn main() {
         for x in 1..=end {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
-            if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else if x == day {
+            if x == day {
                 vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+            } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
             } else {
                 vec.push(format!("{:#04x}", x));
             }
@@ -164,10 +195,10 @@ fn main() {
         for x in end..end + 7 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
-            if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else if x == day {
+            if x == day {
                 vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+            } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
             } else {
                 vec.push(format!("{:#04x}", x));
             }
@@ -178,10 +209,10 @@ fn main() {
         for x in end..end + 7 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
-            if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else if x == day {
+            if x == day {
                 vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+            } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
             } else {
                 vec.push(format!("{:#04x}", x));
             }
@@ -192,10 +223,10 @@ fn main() {
         for x in end..end + 7 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
-            if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else if x == day {
+            if x == day {
                 vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+            } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
             } else {
                 vec.push(format!("{:#04x}", x));
             }
@@ -203,18 +234,46 @@ fn main() {
         println!("{}", vec.join("\t"));
         end = end + 7;
         vec = Vec::new();
-        for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
-            let the_day = NaiveDate::from_ymd(year as i32, month, x);
-            let weekday = the_day.weekday();
-            if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else if x == day {
-                vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-            } else {
-                vec.push(format!("{:#04x}", x));
+        if get_days_from_month(year as i32, month as u32) as u32 - end < 7 {
+            for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
+                let the_day = NaiveDate::from_ymd(year as i32, month, x);
+                let weekday = the_day.weekday();
+                if x == day {
+                    vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                    vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
+                } else {
+                    vec.push(format!("{:#04x}", x));
+                }
             }
+            println!("{}", vec.join("\t"));
+        } else {
+            for x in end..=end + 6 {
+                let the_day = NaiveDate::from_ymd(year as i32, month, x);
+                let weekday = the_day.weekday();
+                if x == day {
+                    vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                    vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
+                } else {
+                    vec.push(format!("{:#04x}", x));
+                }
+            }
+            println!("{}", vec.join("\t"));
+            vec = Vec::new();
+            for x in end + 7..=get_days_from_month(year as i32, month as u32) as u32 {
+                let the_day = NaiveDate::from_ymd(year as i32, month, x);
+                let weekday = the_day.weekday();
+                if x == day {
+                    vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
+                } else if weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun {
+                    vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
+                } else {
+                    vec.push(format!("{:#04x}", x));
+                }
+            }
+            println!("{}", vec.join("\t"));
         }
-        println!("{}", vec.join("\t"));
     }
 }
 
