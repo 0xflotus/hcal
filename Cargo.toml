@@ -1,6 +1,6 @@
 [package]
 name = "hcal"
-version = "0.1.7"
+version = "0.1.8"
 description = "Hexadecimal calendar for terminal"
 license = "MIT"
 authors = ["0xflotus"]
@@ -10,7 +10,6 @@ homepage = "https://github.com/0xflotus/hcal"
 repository = "https://github.com/0xflotus/hcal"
 keywords = ["cli", "calendars", "hexadecimal"]
 categories = ["command-line-utilities"]
-license-file = "LICENSE"
 readme = "README.md"
 exclude = ["README.md"]
 

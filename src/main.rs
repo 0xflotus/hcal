@@ -4,7 +4,7 @@ use std::vec::Vec;
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.1.7")
+        .version("0.1.8")
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("year")
