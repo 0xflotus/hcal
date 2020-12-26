@@ -1,10 +1,11 @@
 use chrono::{Datelike, NaiveDate, Utc, Weekday};
 use clap::{App, Arg};
+use std::process;
 use std::vec::Vec;
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.1.14")
+        .version("0.1.15")
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("year")
@@ -31,44 +32,64 @@ fn main() {
             if let Some(day) = matches.value_of("day") {
                 if day.starts_with("0x") && month.starts_with("0x") && year.starts_with("0x") {
                     let day_without_prefix = day.trim_start_matches("0x");
-                    let hex_day = i64::from_str_radix(day_without_prefix, 16_u32);
+                    let hex_day = i64::from_str_radix(day_without_prefix, 0x10_u32);
                     let month_without_prefix = month.trim_start_matches("0x");
-                    let hex_month = i64::from_str_radix(month_without_prefix, 16_u32);
+                    let hex_month = i64::from_str_radix(month_without_prefix, 0x10_u32);
                     let year_without_prefix = year.trim_start_matches("0x");
-                    let hex_year = i64::from_str_radix(year_without_prefix, 16_u32);
-                    hcal(
-                        hex_year.unwrap() as i32,
-                        hex_month.unwrap() as u32,
-                        hex_day.unwrap() as u32,
-                        true,
-                    );
+                    let hex_year = i64::from_str_radix(year_without_prefix, 0x10_u32);
+                    let i32_year = hex_year.unwrap_or_else(|_| {
+                        println!("Error while parsing hex year");
+                        process::exit(1_i32);
+                    }) as i32;
+                    let u32_month = hex_month.unwrap_or_else(|_| {
+                        println!("Error while parsing hex month");
+                        process::exit(1_i32);
+                    }) as u32;
+                    let u32_day = hex_day.unwrap_or_else(|_| {
+                        println!("Error while parsing hex day");
+                        process::exit(1_i32);
+                    }) as u32;
+                    hcal(i32_year, u32_month, u32_day, true);
                 } else {
-                    hcal(
-                        year.parse::<i32>().unwrap(),
-                        month.parse::<u32>().unwrap(),
-                        day.parse::<u32>().unwrap(),
-                        true,
-                    );
+                    let i32_year = year.parse::<i32>().unwrap_or_else(|_| {
+                        println!("Error while parsing year");
+                        process::exit(1_i32);
+                    }) as i32;
+                    let u32_month = month.parse::<u32>().unwrap_or_else(|_| {
+                        println!("Error while parsing month");
+                        process::exit(1_i32);
+                    }) as u32;
+                    let u32_day = day.parse::<u32>().unwrap_or_else(|_| {
+                        println!("Error while parsing day");
+                        process::exit(1_i32);
+                    }) as u32;
+                    hcal(i32_year, u32_month, u32_day, true);
                 }
             } else {
                 if month.starts_with("0x") && year.starts_with("0x") {
                     let month_without_prefix = month.trim_start_matches("0x");
-                    let hex_month = i64::from_str_radix(month_without_prefix, 16_u32);
+                    let hex_month = i64::from_str_radix(month_without_prefix, 0x10_u32);
                     let year_without_prefix = year.trim_start_matches("0x");
-                    let hex_year = i64::from_str_radix(year_without_prefix, 16_u32);
-                    hcal(
-                        hex_year.unwrap() as i32,
-                        hex_month.unwrap() as u32,
-                        1_u32,
-                        false,
-                    );
+                    let hex_year = i64::from_str_radix(year_without_prefix, 0x10_u32);
+                    let i32_year = hex_year.unwrap_or_else(|_| {
+                        println!("Error while parsing hex year");
+                        process::exit(1_i32);
+                    }) as i32;
+                    let u32_month = hex_month.unwrap_or_else(|_| {
+                        println!("Error while parsing hex month");
+                        process::exit(1_i32);
+                    }) as u32;
+                    hcal(i32_year, u32_month, 1_u32, false);
                 } else {
-                    hcal(
-                        year.parse::<i32>().unwrap(),
-                        month.parse::<u32>().unwrap(),
-                        1_u32,
-                        false,
-                    );
+                    let i32_year = year.parse::<i32>().unwrap_or_else(|_| {
+                        println!("Error while parsing year");
+                        process::exit(1_i32);
+                    }) as i32;
+                    let u32_month = month.parse::<u32>().unwrap_or_else(|_| {
+                        println!("Error while parsing month");
+                        process::exit(1_i32);
+                    }) as u32;
+                    hcal(i32_year, u32_month, 1_u32, false);
                 }
             }
         } else {
@@ -202,11 +223,11 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool) {
 fn get_days_from_month(year: i32, month: u32) -> i64 {
     NaiveDate::from_ymd(
         match month {
-            12_u32 => year + 1_i32,
+            0xc_u32 => year + 1_i32,
             _ => year,
         },
         match month {
-            12_u32 => 1_u32,
+            0xc_u32 => 1_u32,
             _ => month + 1_u32,
         },
         1_u32,
