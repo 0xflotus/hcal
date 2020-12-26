@@ -4,7 +4,7 @@ use std::vec::Vec;
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.1.12")
+        .version("0.1.13-caesar")
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("year")
@@ -29,19 +29,47 @@ fn main() {
     if let Some(year) = matches.value_of("year") {
         if let Some(month) = matches.value_of("month") {
             if let Some(day) = matches.value_of("day") {
-                hcal(
-                    year.parse::<i32>().unwrap(),
-                    month.parse::<u32>().unwrap(),
-                    day.parse::<u32>().unwrap(),
-                    true,
-                );
+                if day.starts_with("0x") && month.starts_with("0x") && year.starts_with("0x") {
+                    let day_without_prefix = day.trim_start_matches("0x");
+                    let hex_day = i64::from_str_radix(day_without_prefix, 16_u32);
+                    let month_without_prefix = month.trim_start_matches("0x");
+                    let hex_month = i64::from_str_radix(month_without_prefix, 16_u32);
+                    let year_without_prefix = year.trim_start_matches("0x");
+                    let hex_year = i64::from_str_radix(year_without_prefix, 16_u32);
+                    hcal(
+                        hex_year.unwrap() as i32,
+                        hex_month.unwrap() as u32,
+                        hex_day.unwrap() as u32,
+                        true,
+                    );
+                } else {
+                    hcal(
+                        year.parse::<i32>().unwrap(),
+                        month.parse::<u32>().unwrap(),
+                        day.parse::<u32>().unwrap(),
+                        true,
+                    );
+                }
             } else {
-                hcal(
-                    year.parse::<i32>().unwrap(),
-                    month.parse::<u32>().unwrap(),
-                    1_u32,
-                    false,
-                );
+                if month.starts_with("0x") && year.starts_with("0x") {
+                    let month_without_prefix = month.trim_start_matches("0x");
+                    let hex_month = i64::from_str_radix(month_without_prefix, 16_u32);
+                    let year_without_prefix = year.trim_start_matches("0x");
+                    let hex_year = i64::from_str_radix(year_without_prefix, 16_u32);
+                    hcal(
+                        hex_year.unwrap() as i32,
+                        hex_month.unwrap() as u32,
+                        1_u32,
+                        false,
+                    );
+                } else {
+                    hcal(
+                        year.parse::<i32>().unwrap(),
+                        month.parse::<u32>().unwrap(),
+                        1_u32,
+                        false,
+                    );
+                }
             }
         } else {
             println!("Please set a month.");
