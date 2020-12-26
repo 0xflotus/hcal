@@ -5,7 +5,7 @@ use std::vec::Vec;
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.1.15")
+        .version("0.1.16")
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("disable")
@@ -18,6 +18,18 @@ fn main() {
                 .short('W')
                 .long("no-weekend")
                 .about("Disable weekend marker"),
+        )
+        .arg(
+            Arg::new("effect")
+                .short('e')
+                .long("effect")
+                .about("Enable title font effects"),
+        )
+        .arg(
+            Arg::new("disable-all")
+                .short('A')
+                .long("disbale-all")
+                .about("Disable all font effects"),
         )
         .arg(
             Arg::new("year")
@@ -47,6 +59,17 @@ fn main() {
     let mut show_weekend_marker = true;
     if matches.is_present("no-weekend") {
         show_weekend_marker = false;
+    }
+
+    let mut show_title_font_effect = false;
+    if matches.is_present("effect") {
+        show_title_font_effect = true;
+    }
+
+    if matches.is_present("disable-all") {
+        show_day_marker = false;
+        show_weekend_marker = false;
+        show_title_font_effect = false;
     }
 
     if let Some(year) = matches.value_of("year") {
@@ -80,6 +103,7 @@ fn main() {
                         u32_day,
                         show_day_marker,
                         show_weekend_marker,
+                        show_title_font_effect,
                     );
                 } else {
                     let i32_year = year.parse::<i32>().unwrap_or_else(|_| {
@@ -100,6 +124,7 @@ fn main() {
                         u32_day,
                         show_day_marker,
                         show_weekend_marker,
+                        show_title_font_effect,
                     );
                 }
             } else {
@@ -116,7 +141,14 @@ fn main() {
                         println!("Error while parsing hex month");
                         process::exit(1_i32);
                     }) as u32;
-                    hcal(i32_year, u32_month, 1_u32, false, show_weekend_marker);
+                    hcal(
+                        i32_year,
+                        u32_month,
+                        1_u32,
+                        false,
+                        show_weekend_marker,
+                        show_title_font_effect,
+                    );
                 } else {
                     let i32_year = year.parse::<i32>().unwrap_or_else(|_| {
                         println!("Error while parsing year");
@@ -126,7 +158,14 @@ fn main() {
                         println!("Error while parsing month");
                         process::exit(1_i32);
                     }) as u32;
-                    hcal(i32_year, u32_month, 1_u32, false, show_weekend_marker);
+                    hcal(
+                        i32_year,
+                        u32_month,
+                        1_u32,
+                        false,
+                        show_weekend_marker,
+                        show_title_font_effect,
+                    );
                 }
             }
         } else {
@@ -140,11 +179,12 @@ fn main() {
             now.day(),
             show_day_marker,
             show_weekend_marker,
+            show_title_font_effect,
         );
     }
 }
 
-fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool) {
+fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, effect: bool) {
     use chrono::Weekday;
 
     let now = NaiveDate::from_ymd(year, month, day);
@@ -154,12 +194,16 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool) {
     let start_date = NaiveDate::from_ymd(year as i32, month, 1_u32);
     let days_from_monday = start_date.weekday().num_days_from_monday();
     println!(
-        "\t\t{}\n\t\t  {}\n",
+        "\t\t\t{}\n\t\t\t  {}\n",
         format!("{:#06x}", year),
         format!("{:02x}", month)
     );
 
-    println!("Mon\tTue\tWed\tThu\tFri\tSat\tSun");
+    if effect {
+        println!("\u{001b}[1m\u{001b}[4mMon\tTue\tWed\tThu\tFri\tSat\tSun\u{001b}[0m");
+    } else {
+        println!("Mon\tTue\tWed\tThu\tFri\tSat\tSun");
+    }
     let mut end = 7_u32 - days_from_monday;
     let mut vec = Vec::new();
     for x in 1_u32..=end {
