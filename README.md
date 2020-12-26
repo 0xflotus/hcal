@@ -10,4 +10,4 @@ A hexadecimal calendar for terminal
 
 `hcal --help`
 
-[![asciicast](https://asciinema.org/a/381219.svg)](https://asciinema.org/a/381219)
+[![asciicast](https://asciinema.org/a/381223.svg)](https://asciinema.org/a/381223)

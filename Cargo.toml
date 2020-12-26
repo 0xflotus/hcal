@@ -1,6 +1,6 @@
 [package]
 name = "hcal"
-version = "0.1.13-caesar"
+version = "0.1.14"
 description = "Hexadecimal calendar for terminal"
 license = "MIT"
 authors = ["0xflotus"]
