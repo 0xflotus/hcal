@@ -1,3 +1,4 @@
+use bdays::easter;
 use chrono::{Datelike, NaiveDate, Utc};
 use clap::{App, Arg};
 use std::process;
@@ -7,6 +8,13 @@ fn main() {
     let matches = App::new("hcal")
         .version("0.1.16")
         .about("A hexadecimal calendar")
+        .arg(
+            Arg::new("easter")
+                .short('e')
+                .long("easter")
+                .takes_value(true)
+                .about("Print the Hex Date of easter"),
+        )
         .arg(
             Arg::new("disable")
                 .short('d')
@@ -21,7 +29,7 @@ fn main() {
         )
         .arg(
             Arg::new("effect")
-                .short('e')
+                .short('E')
                 .long("effect")
                 .about("Enable title font effects"),
         )
@@ -50,6 +58,27 @@ fn main() {
                 .index(3_u64),
         )
         .get_matches();
+
+    if let Some(easter) = matches.value_of("easter") {
+        let easter_date = easter::easter_naive_date(easter.parse::<i32>().unwrap_or_else(|_| {
+            println!("Error while parsing year");
+            process::exit(1_i32);
+        }) as i32)
+        .unwrap_or_else(|error| {
+            println!("{}", error);
+            process::exit(1_i32);
+        });
+        println!(
+            "{}",
+            format!(
+                "{:#06x}-{:#04x}-{:#04x}",
+                easter_date.year(),
+                easter_date.month(),
+                easter_date.day()
+            )
+        );
+        process::exit(0_i32);
+    }
 
     let mut show_day_marker = true;
     if matches.is_present("disable") {
