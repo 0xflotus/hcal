@@ -8,6 +8,12 @@ fn main() {
         .version("0.1.15")
         .about("A hexadecimal calendar")
         .arg(
+            Arg::new("disable")
+                .short('d')
+                .long("disable")
+                .about("Disable day marker"),
+        )
+        .arg(
             Arg::new("year")
                 .about("Sets the year")
                 .required(false)
@@ -26,6 +32,11 @@ fn main() {
                 .index(3_u64),
         )
         .get_matches();
+
+    let mut show_day_marker = true;
+    if matches.is_present("disable") {
+        show_day_marker = false;
+    }
 
     if let Some(year) = matches.value_of("year") {
         if let Some(month) = matches.value_of("month") {
@@ -52,7 +63,7 @@ fn main() {
                         println!("Error while parsing hex day");
                         process::exit(1_i32);
                     }) as u32;
-                    hcal(i32_year, u32_month, u32_day, true);
+                    hcal(i32_year, u32_month, u32_day, show_day_marker);
                 } else {
                     let i32_year = year.parse::<i32>().unwrap_or_else(|_| {
                         println!("Error while parsing year");
@@ -66,7 +77,7 @@ fn main() {
                         println!("Error while parsing day");
                         process::exit(1_i32);
                     }) as u32;
-                    hcal(i32_year, u32_month, u32_day, true);
+                    hcal(i32_year, u32_month, u32_day, show_day_marker);
                 }
             } else {
                 if [month, year].iter().all(|&elem| elem.starts_with("0x")) {
