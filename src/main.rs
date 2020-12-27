@@ -291,7 +291,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
         "\t".repeat(days_from_monday as usize),
         vec.join("\t")
     );
-    end = end + 1_u32;
+    end += 1_u32;
     vec = Vec::new();
     for x in end..end + 7_u32 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
@@ -305,7 +305,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
         }
     }
     println!("{}", vec.join("\t"));
-    end = end + 7_u32;
+    end += 7_u32;
     vec = Vec::new();
     for x in end..end + 7_u32 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
@@ -319,7 +319,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
         }
     }
     println!("{}", vec.join("\t"));
-    end = end + 7_u32;
+    end += 7_u32;
     vec = Vec::new();
     for x in end..end + 7_u32 {
         let the_day = NaiveDate::from_ymd(year as i32, month, x);
@@ -333,7 +333,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
         }
     }
     println!("{}", vec.join("\t"));
-    end = end + 7_u32;
+    end += 7_u32;
     vec = Vec::new();
     if get_days_from_month(year as i32, month as u32) as u32 - end < 7_u32 {
         for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
