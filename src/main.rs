@@ -6,8 +6,9 @@ use std::process;
 use std::vec::Vec;
 
 fn main() {
+    const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     let matches = App::new("hcal")
-        .version("0.1.20")
+        .version(VERSION.unwrap_or("n/a"))
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("easter")
