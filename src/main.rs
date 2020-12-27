@@ -5,6 +5,9 @@ use regex::Regex;
 use std::process;
 use std::vec::Vec;
 
+mod helpers;
+use helpers::{cal, hex};
+
 fn main() {
     const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     let matches = App::new("hcal")
@@ -135,28 +138,10 @@ fn main() {
                     .iter()
                     .all(|&elem| elem.starts_with("0x"))
                 {
-                    let day_without_prefix = day.trim_start_matches("0x");
-                    let hex_day = i64::from_str_radix(day_without_prefix, 0x10_u32);
-                    let month_without_prefix = month.trim_start_matches("0x");
-                    let hex_month = i64::from_str_radix(month_without_prefix, 0x10_u32);
-                    let year_without_prefix = year.trim_start_matches("0x");
-                    let hex_year = i64::from_str_radix(year_without_prefix, 0x10_u32);
-                    let i32_year = hex_year.unwrap_or_else(|_| {
-                        println!("Error while parsing hex year");
-                        process::exit(1_i32);
-                    }) as i32;
-                    let u32_month = hex_month.unwrap_or_else(|_| {
-                        println!("Error while parsing hex month");
-                        process::exit(1_i32);
-                    }) as u32;
-                    let u32_day = hex_day.unwrap_or_else(|_| {
-                        println!("Error while parsing hex day");
-                        process::exit(1_i32);
-                    }) as u32;
                     hcal(
-                        i32_year,
-                        u32_month,
-                        u32_day,
+                        hex::trim_and_parse_hex(year) as i32,
+                        hex::trim_and_parse_hex(month) as u32,
+                        hex::trim_and_parse_hex(day) as u32,
                         show_day_marker,
                         show_weekend_marker,
                         show_title_font_effect,
@@ -184,21 +169,9 @@ fn main() {
                     );
                 }
             } else if [month, year].iter().all(|&elem| elem.starts_with("0x")) {
-                let month_without_prefix = month.trim_start_matches("0x");
-                let hex_month = i64::from_str_radix(month_without_prefix, 0x10_u32);
-                let year_without_prefix = year.trim_start_matches("0x");
-                let hex_year = i64::from_str_radix(year_without_prefix, 0x10_u32);
-                let i32_year = hex_year.unwrap_or_else(|_| {
-                    println!("Error while parsing hex year");
-                    process::exit(1_i32);
-                }) as i32;
-                let u32_month = hex_month.unwrap_or_else(|_| {
-                    println!("Error while parsing hex month");
-                    process::exit(1_i32);
-                }) as u32;
                 hcal(
-                    i32_year,
-                    u32_month,
+                    hex::trim_and_parse_hex(year) as i32,
+                    hex::trim_and_parse_hex(month) as u32,
                     1_u32,
                     false,
                     show_weekend_marker,
@@ -242,7 +215,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
     use chrono::Weekday;
 
     let now = NaiveDate::from_ymd(year, month, day);
-    let (_is_common_era, year) = now.year_ce();
+    let year = now.year();
     let month = now.month();
     let day = now.day();
     let start_date = NaiveDate::from_ymd(year as i32, month, 1_u32);
@@ -320,8 +293,8 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
     println!("{}", vec.join("\t"));
     end += 7_u32;
     vec = Vec::new();
-    if get_days_from_month(year as i32, month as u32) as u32 - end < 7_u32 {
-        for x in end..=get_days_from_month(year as i32, month as u32) as u32 {
+    if cal::get_days_from_month(year as i32, month as u32) as u32 - end < 7_u32 {
+        for x in end..=cal::get_days_from_month(year as i32, month as u32) as u32 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
             if x == day && show_day {
@@ -347,7 +320,7 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
         }
         println!("{}", vec.join("\t"));
         vec = Vec::new();
-        for x in end + 7_u32..=get_days_from_month(year as i32, month as u32) as u32 {
+        for x in end + 7_u32..=cal::get_days_from_month(year as i32, month as u32) as u32 {
             let the_day = NaiveDate::from_ymd(year as i32, month, x);
             let weekday = the_day.weekday();
             if x == day && show_day {
@@ -360,21 +333,4 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
         }
         println!("{}", vec.join("\t"));
     }
-}
-
-// from https://stackoverflow.com/a/58188385
-fn get_days_from_month(year: i32, month: u32) -> i64 {
-    NaiveDate::from_ymd(
-        match month {
-            0xc_u32 => year + 1_i32,
-            _ => year,
-        },
-        match month {
-            0xc_u32 => 1_u32,
-            _ => month + 1_u32,
-        },
-        1_u32,
-    )
-    .signed_duration_since(NaiveDate::from_ymd(year, month, 1_u32))
-    .num_days()
 }
