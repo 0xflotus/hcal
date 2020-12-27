@@ -122,26 +122,10 @@ fn main() {
         }
     }
 
-    let mut show_day_marker = true;
-    if matches.is_present("disable") {
-        show_day_marker = false;
-    }
-
-    let mut show_weekend_marker = true;
-    if matches.is_present("no-weekend") {
-        show_weekend_marker = false;
-    }
-
-    let mut show_title_font_effect = false;
-    if matches.is_present("effect") {
-        show_title_font_effect = true;
-    }
-
-    if matches.is_present("disable-all") {
-        show_day_marker = false;
-        show_weekend_marker = false;
-        show_title_font_effect = false;
-    }
+    let show_day_marker = !matches.is_present("disable-all") && !matches.is_present("disable");
+    let show_weekend_marker =
+        !matches.is_present("disable-all") && !matches.is_present("no-weekend");
+    let show_title_font_effect = !matches.is_present("disable-all") && matches.is_present("effect");
 
     if let Some(year) = matches.value_of("year") {
         if let Some(month) = matches.value_of("month") {
