@@ -139,9 +139,18 @@ fn main() {
                     .all(|&elem| elem.starts_with("0x"))
                 {
                     hcal(
-                        hex::trim_and_parse_hex(year) as i32,
-                        hex::trim_and_parse_hex(month) as u32,
-                        hex::trim_and_parse_hex(day) as u32,
+                        hex::trim_and_parse_hex(year).unwrap_or_else(|_| {
+                            println!("Error while parsing year");
+                            process::exit(1_i32);
+                        }) as i32,
+                        hex::trim_and_parse_hex(month).unwrap_or_else(|_| {
+                            println!("Error while parsing month");
+                            process::exit(1_i32);
+                        }) as u32,
+                        hex::trim_and_parse_hex(day).unwrap_or_else(|_| {
+                            println!("Error while parsing day");
+                            process::exit(1_i32);
+                        }) as u32,
                         show_day_marker,
                         show_weekend_marker,
                         show_title_font_effect,
@@ -170,8 +179,14 @@ fn main() {
                 }
             } else if [month, year].iter().all(|&elem| elem.starts_with("0x")) {
                 hcal(
-                    hex::trim_and_parse_hex(year) as i32,
-                    hex::trim_and_parse_hex(month) as u32,
+                    hex::trim_and_parse_hex(year).unwrap_or_else(|_| {
+                        println!("Error while parsing year");
+                        process::exit(1_i32);
+                    }) as i32,
+                    hex::trim_and_parse_hex(month).unwrap_or_else(|_| {
+                        println!("Error while parsing month");
+                        process::exit(1_i32);
+                    }) as u32,
                     1_u32,
                     false,
                     show_weekend_marker,

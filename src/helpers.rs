@@ -20,13 +20,11 @@ pub mod cal {
 }
 
 pub mod hex {
-    use std::i64;
+    use std::{i64, num};
 
-    pub fn trim_and_parse_hex(hex: &str) -> i64 {
-        let without_prefix = hex.trim_start_matches("0x");
-        match i64::from_str_radix(without_prefix, 0x10_u32) {
-            Ok(val) => val,
-            Err(_) => 0,
-        }
+    const PREFIX: &str = "0x";
+
+    pub fn trim_and_parse_hex(hex: &str) -> Result<i64, num::ParseIntError> {
+        return i64::from_str_radix(hex.trim_start_matches(PREFIX), 0x10_u32);
     }
 }
