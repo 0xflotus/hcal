@@ -1,10 +1,12 @@
 use bdays::easter;
 use chrono::{Datelike, NaiveDate, Utc};
 use clap::{App, Arg};
+use regex::Regex;
 use std::process;
 use std::vec::Vec;
 
 fn main() {
+    let today = Utc::now();
     let matches = App::new("hcal")
         .version("0.1.17")
         .about("A hexadecimal calendar")
@@ -13,7 +15,27 @@ fn main() {
                 .short('e')
                 .long("easter")
                 .takes_value(true)
-                .about("Print the Hex Date of easter"),
+                .default_value(&format!("{}", today.year()))
+                .value_name("year")
+                .hide_default_value(true)
+                .about("Prints the Hex Date of easter. [default: this year]"),
+        )
+        .arg(
+            Arg::new("transform")
+                .short('T')
+                .long("transform")
+                .takes_value(true)
+                .default_value(&format!(
+                    "{}-{}-{}",
+                    today.day(),
+                    today.month(),
+                    today.year()
+                ))
+                .value_name("date")
+                .hide_default_value(true)
+                .about(
+                    "Prints the Hex Date of <date>. Needs format of dd-mm-yyyy. [default: today]",
+                ),
         )
         .arg(
             Arg::new("disable")
@@ -78,6 +100,38 @@ fn main() {
             )
         );
         process::exit(0_i32);
+    }
+
+    if let Some(date) = matches.value_of("transform") {
+        let re = Regex::new(r"^\d{2}-\d{2}-\d{4}$").unwrap_or_else(|_| {
+            println!("Error while parsing date");
+            process::exit(1_i32);
+        });
+        if re.is_match(date) {
+            let splitted_date: Vec<&str> = date.split("-").collect();
+            println!(
+                "{}",
+                format!(
+                    "{:#06x}-{:#04x}-{:#04x}",
+                    splitted_date[2].parse::<u32>().unwrap_or_else(|_| {
+                        println!("Error while parsing year");
+                        process::exit(1_i32);
+                    }),
+                    splitted_date[1].parse::<u32>().unwrap_or_else(|_| {
+                        println!("Error while parsing month");
+                        process::exit(1_i32);
+                    }),
+                    splitted_date[0].parse::<i32>().unwrap_or_else(|_| {
+                        println!("Error while parsing day");
+                        process::exit(1_i32);
+                    }),
+                )
+            );
+            process::exit(0_i32);
+        } else {
+            println!("Wrong format. Please refer to the right format: dd-mm-yyyy");
+            process::exit(1_i32);
+        }
     }
 
     let mut show_day_marker = true;
