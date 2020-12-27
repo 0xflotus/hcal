@@ -96,7 +96,7 @@ fn main() {
             process::exit(1_i32);
         });
         if re.is_match(date) {
-            let splitted_date: Vec<&str> = date.split("-").collect();
+            let splitted_date: Vec<&str> = date.split('-').collect();
             println!(
                 "{}",
                 format!(
