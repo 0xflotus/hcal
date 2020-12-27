@@ -122,9 +122,9 @@ fn main() {
         }
     }
 
-    let show_day_marker = !matches.is_present("disable-all") && !matches.is_present("disable");
+    let show_day_marker = !(matches.is_present("disable-all") || matches.is_present("disable"));
     let show_weekend_marker =
-        !matches.is_present("disable-all") && !matches.is_present("no-weekend");
+        !(matches.is_present("disable-all") || matches.is_present("no-weekend"));
     let show_title_font_effect = !matches.is_present("disable-all") && matches.is_present("effect");
 
     if let Some(year) = matches.value_of("year") {
