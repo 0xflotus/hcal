@@ -6,7 +6,6 @@ use std::process;
 use std::vec::Vec;
 
 fn main() {
-    let today = Utc::now();
     let matches = App::new("hcal")
         .version("0.1.18")
         .about("A hexadecimal calendar")
@@ -15,26 +14,17 @@ fn main() {
                 .short('e')
                 .long("easter")
                 .takes_value(true)
-                .default_value(&format!("{}", today.year()))
                 .value_name("year")
-                .hide_default_value(true)
-                .about("Prints the Hex Date of easter. [default: this year]"),
+                .about("Prints the Hex Date of easter."),
         )
         .arg(
             Arg::new("transform")
                 .short('T')
                 .long("transform")
                 .takes_value(true)
-                .default_value(&format!(
-                    "{}-{}-{}",
-                    today.day(),
-                    today.month(),
-                    today.year()
-                ))
                 .value_name("date")
-                .hide_default_value(true)
                 .about(
-                    "Prints the Hex Date of <date>. Needs format of dd-mm-yyyy. [default: today]",
+                    "Prints the Hex Date of <date>. Needs format of dd-mm-yyyy.",
                 ),
         )
         .arg(
