@@ -23,9 +23,7 @@ fn main() {
                 .long("transform")
                 .takes_value(true)
                 .value_name("date")
-                .about(
-                    "Prints the Hex Date of <date>. Needs format of dd-mm-yyyy.",
-                ),
+                .about("Prints the Hex Date of <date>. Needs format of dd-mm-yyyy."),
         )
         .arg(
             Arg::new("disable")
@@ -200,46 +198,44 @@ fn main() {
                         show_title_font_effect,
                     );
                 }
+            } else if [month, year].iter().all(|&elem| elem.starts_with("0x")) {
+                let month_without_prefix = month.trim_start_matches("0x");
+                let hex_month = i64::from_str_radix(month_without_prefix, 0x10_u32);
+                let year_without_prefix = year.trim_start_matches("0x");
+                let hex_year = i64::from_str_radix(year_without_prefix, 0x10_u32);
+                let i32_year = hex_year.unwrap_or_else(|_| {
+                    println!("Error while parsing hex year");
+                    process::exit(1_i32);
+                }) as i32;
+                let u32_month = hex_month.unwrap_or_else(|_| {
+                    println!("Error while parsing hex month");
+                    process::exit(1_i32);
+                }) as u32;
+                hcal(
+                    i32_year,
+                    u32_month,
+                    1_u32,
+                    false,
+                    show_weekend_marker,
+                    show_title_font_effect,
+                );
             } else {
-                if [month, year].iter().all(|&elem| elem.starts_with("0x")) {
-                    let month_without_prefix = month.trim_start_matches("0x");
-                    let hex_month = i64::from_str_radix(month_without_prefix, 0x10_u32);
-                    let year_without_prefix = year.trim_start_matches("0x");
-                    let hex_year = i64::from_str_radix(year_without_prefix, 0x10_u32);
-                    let i32_year = hex_year.unwrap_or_else(|_| {
-                        println!("Error while parsing hex year");
-                        process::exit(1_i32);
-                    }) as i32;
-                    let u32_month = hex_month.unwrap_or_else(|_| {
-                        println!("Error while parsing hex month");
-                        process::exit(1_i32);
-                    }) as u32;
-                    hcal(
-                        i32_year,
-                        u32_month,
-                        1_u32,
-                        false,
-                        show_weekend_marker,
-                        show_title_font_effect,
-                    );
-                } else {
-                    let i32_year = year.parse::<i32>().unwrap_or_else(|_| {
-                        println!("Error while parsing year");
-                        process::exit(1_i32);
-                    }) as i32;
-                    let u32_month = month.parse::<u32>().unwrap_or_else(|_| {
-                        println!("Error while parsing month");
-                        process::exit(1_i32);
-                    }) as u32;
-                    hcal(
-                        i32_year,
-                        u32_month,
-                        1_u32,
-                        false,
-                        show_weekend_marker,
-                        show_title_font_effect,
-                    );
-                }
+                let i32_year = year.parse::<i32>().unwrap_or_else(|_| {
+                    println!("Error while parsing year");
+                    process::exit(1_i32);
+                }) as i32;
+                let u32_month = month.parse::<u32>().unwrap_or_else(|_| {
+                    println!("Error while parsing month");
+                    process::exit(1_i32);
+                }) as u32;
+                hcal(
+                    i32_year,
+                    u32_month,
+                    1_u32,
+                    false,
+                    show_weekend_marker,
+                    show_title_font_effect,
+                );
             }
         } else {
             println!("Please set a month.");
