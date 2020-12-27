@@ -8,7 +8,7 @@ use std::vec::Vec;
 fn main() {
     let today = Utc::now();
     let matches = App::new("hcal")
-        .version("0.1.17")
+        .version("0.1.18")
         .about("A hexadecimal calendar")
         .arg(
             Arg::new("easter")
