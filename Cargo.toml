@@ -19,6 +19,7 @@ clap = "3.0.0-beta.2"
 chrono = "0.4"
 bdays = "0.1.1"
 regex = "1"
+cbb = "0.1.5"
 
 [[bin]]
 
