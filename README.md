@@ -2,7 +2,7 @@
 
 # hcal
 
-A hexadecimal calendar for terminal
+A programmer's calendar for terminal
 
 ## Installation
 
@@ -18,7 +18,7 @@ A hexadecimal calendar for terminal
 
 ```console
 > hcal --help
-A hexadecimal calendar
+A programmer's calendar
 
 USAGE:
     hcal [FLAGS] [OPTIONS] [ARGS]
