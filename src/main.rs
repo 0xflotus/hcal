@@ -15,7 +15,7 @@ fn main() {
         option_env!("CARGO_PKG_VERSION");
     let matches = App::new("hcal")
         .version(VERSION.unwrap_or("n/a"))
-        .about("A hexadecimal calendar")
+        .about("A hexadecimal calendar for programmers")
         .arg(
             Arg::new("easter")
                 .short('e')
