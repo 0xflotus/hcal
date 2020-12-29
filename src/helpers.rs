@@ -28,3 +28,19 @@ pub mod hex {
         return i64::from_str_radix(hex.trim_start_matches(PREFIX), 0x10_u32);
     }
 }
+
+pub mod fmt {
+    use cbb::util::cbb::int_to_bal_ternary;
+    pub fn format_date(date: (i32, u32, u32), balanced_ternary: bool) -> std::string::String {
+        if balanced_ternary {
+            return format!(
+                "{}:{}:{}",
+                int_to_bal_ternary(date.0 as i128),
+                int_to_bal_ternary(date.1 as i128),
+                int_to_bal_ternary(date.2 as i128)
+            );
+        } else {
+            return format!("{:#06x}-{:#04x}-{:#04x}", date.0, date.1, date.2);
+        }
+    }
+}
