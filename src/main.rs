@@ -227,37 +227,24 @@ fn main() {
 }
 
 fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, effect: bool) {
-    use chrono::Weekday;
-
     let now = NaiveDate::from_ymd(year, month, day);
     let year = now.year();
     let month = now.month();
     let day = now.day();
-    let start_date = NaiveDate::from_ymd(year as i32, month, 1_u32);
-    let days_from_monday = start_date.weekday().num_days_from_monday();
+    let days_from_monday = NaiveDate::from_ymd(year as i32, month, 1_u32)
+        .weekday()
+        .num_days_from_monday();
     println!(
         "\t\t\t{}\n\t\t\t  {}\n",
         format!("{:#06x}", year),
         format!("{:02x}", month)
     );
 
-    if effect {
-        println!("\u{001b}[1m\u{001b}[4mMon\tTue\tWed\tThu\tFri\tSat\tSun\u{001b}[0m");
-    } else {
-        println!("Mon\tTue\tWed\tThu\tFri\tSat\tSun");
-    }
+    println!("{}", headline(effect));
     let mut end = 7_u32 - days_from_monday;
     let mut vec = Vec::new();
     for x in 1_u32..=end {
-        let the_day = NaiveDate::from_ymd(year as i32, month, x);
-        let weekday = the_day.weekday();
-        if x == day && show_day {
-            vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-        } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
-            vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-        } else {
-            vec.push(format!("{:#04x}", x));
-        }
+        vec.push(mark((year as i32, month, x), day, show_day, show_weekend));
     }
     println!(
         "{}{}",
@@ -267,85 +254,63 @@ fn hcal(year: i32, month: u32, day: u32, show_day: bool, show_weekend: bool, eff
     end += 1_u32;
     vec = Vec::new();
     for x in end..end + 7_u32 {
-        let the_day = NaiveDate::from_ymd(year as i32, month, x);
-        let weekday = the_day.weekday();
-        if x == day && show_day {
-            vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-        } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
-            vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-        } else {
-            vec.push(format!("{:#04x}", x));
-        }
+        vec.push(mark((year as i32, month, x), day, show_day, show_weekend));
     }
     println!("{}", vec.join("\t"));
     end += 7_u32;
     vec = Vec::new();
     for x in end..end + 7_u32 {
-        let the_day = NaiveDate::from_ymd(year as i32, month, x);
-        let weekday = the_day.weekday();
-        if x == day && show_day {
-            vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-        } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
-            vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-        } else {
-            vec.push(format!("{:#04x}", x));
-        }
+        vec.push(mark((year as i32, month, x), day, show_day, show_weekend));
     }
     println!("{}", vec.join("\t"));
     end += 7_u32;
     vec = Vec::new();
     for x in end..end + 7_u32 {
-        let the_day = NaiveDate::from_ymd(year as i32, month, x);
-        let weekday = the_day.weekday();
-        if x == day && show_day {
-            vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-        } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
-            vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-        } else {
-            vec.push(format!("{:#04x}", x));
-        }
+        vec.push(mark((year as i32, month, x), day, show_day, show_weekend));
     }
     println!("{}", vec.join("\t"));
     end += 7_u32;
     vec = Vec::new();
     if cal::get_days_from_month(year as i32, month as u32) as u32 - end < 7_u32 {
         for x in end..=cal::get_days_from_month(year as i32, month as u32) as u32 {
-            let the_day = NaiveDate::from_ymd(year as i32, month, x);
-            let weekday = the_day.weekday();
-            if x == day && show_day {
-                vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-            } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else {
-                vec.push(format!("{:#04x}", x));
-            }
+            vec.push(mark((year as i32, month, x), day, show_day, show_weekend));
         }
         println!("{}", vec.join("\t"));
     } else {
         for x in end..=end + 6_u32 {
-            let the_day = NaiveDate::from_ymd(year as i32, month, x);
-            let weekday = the_day.weekday();
-            if x == day && show_day {
-                vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-            } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else {
-                vec.push(format!("{:#04x}", x));
-            }
+            vec.push(mark((year as i32, month, x), day, show_day, show_weekend));
         }
         println!("{}", vec.join("\t"));
         vec = Vec::new();
         for x in end + 7_u32..=cal::get_days_from_month(year as i32, month as u32) as u32 {
-            let the_day = NaiveDate::from_ymd(year as i32, month, x);
-            let weekday = the_day.weekday();
-            if x == day && show_day {
-                vec.push(format!("\u{001b}[41m{:#04x}\u{001b}[0m", x));
-            } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
-                vec.push(format!("\u{001b}[7m{:#04x}\u{001b}[0m", x));
-            } else {
-                vec.push(format!("{:#04x}", x));
-            }
+            vec.push(mark((year as i32, month, x), day, show_day, show_weekend));
         }
         println!("{}", vec.join("\t"));
+    }
+}
+
+fn headline(effect: bool) -> &'static str {
+    return if effect {
+        "\u{001b}[1m\u{001b}[4mMon\tTue\tWed\tThu\tFri\tSat\tSun\u{001b}[0m"
+    } else {
+        "Mon\tTue\tWed\tThu\tFri\tSat\tSun"
+    };
+}
+
+fn mark(
+    date_tuple: (i32, u32, u32),
+    day: u32,
+    show_day: bool,
+    show_weekend: bool,
+) -> std::string::String {
+    use chrono::Weekday;
+    let the_day = NaiveDate::from_ymd(date_tuple.0, date_tuple.1, date_tuple.2);
+    let weekday = the_day.weekday();
+    if date_tuple.2 == day && show_day {
+        return format!("\u{001b}[41m{:#04x}\u{001b}[0m", date_tuple.2);
+    } else if [Weekday::Sat, Weekday::Sun].contains(&weekday) && show_weekend {
+        return format!("\u{001b}[7m{:#04x}\u{001b}[0m", date_tuple.2);
+    } else {
+        return format!("{:#04x}", date_tuple.2);
     }
 }
