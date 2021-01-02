@@ -1,6 +1,9 @@
+#[macro_use]
+extern crate clap;
+
 use bdays::easter;
 use chrono::{Datelike, NaiveDate, Utc};
-use clap::{App, Arg};
+use clap::{App, AppSettings, Arg};
 use regex::Regex;
 use std::process;
 use std::vec::Vec;
@@ -11,11 +14,10 @@ mod helpers;
 use helpers::{cal, fmt, hex};
 
 fn main() {
-    const VERSION: Option<&'static str> =
-        option_env!("CARGO_PKG_VERSION");
-    let matches = App::new("hcal")
-        .version(VERSION.unwrap_or("n/a"))
-        .about("A hexadecimal calendar")
+    let matches = App::new(crate_name!())
+        .setting(AppSettings::ColoredHelp)
+        .version(crate_version!())
+        .about(crate_description!())
         .arg(
             Arg::new("easter")
                 .short('e')
