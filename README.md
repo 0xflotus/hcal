@@ -2,23 +2,17 @@
 
 # hcal
 
-A programmer's calendar for terminal
+A hexadecimal calendar in terminal for programmers
 
 ## Installation
 
 `cargo install hcal`
 
-## Examples
-
-![hex](./docs/hex.png)
-
-![balanced ternary](./docs/bal_ternary.png)
-
 ## Usage
 
 ```console
 > hcal --help
-A programmer's calendar
+A hexadecimal calendar for programmers
 
 USAGE:
     hcal [FLAGS] [OPTIONS] [ARGS]
@@ -42,4 +36,4 @@ OPTIONS:
     -T, --transform <date>    Prints the Hex Date of <date>. Needs format of dd-mm-yyyy.
 ```
 
-[![asciicast](https://asciinema.org/a/381223.svg)](https://asciinema.org/a/381223)
+[![asciicast](https://asciinema.org/a/381715.svg)](https://asciinema.org/a/381715)
