@@ -12,28 +12,28 @@ A hexadecimal calendar in terminal for programmers
 
 ```console
 > hcal --help
-A hexadecimal calendar for programmers
+A hexadecimal calendar for terminal
 
 USAGE:
-    hcal [FLAGS] [OPTIONS] [ARGS]
+    hcal [OPTIONS] [ARGS]
 
 ARGS:
     <year>     Sets the year
     <month>    Sets the month
     <day>      Sets the day
 
-FLAGS:
-    -b, --balanced-ternary    Use balanced ternary representation
-    -d, --disable             Disable day marker
-    -A, --disbale-all         Disable all font effects
-    -E, --effect              Enable title font effects
-    -h, --help                Prints help information
-    -W, --no-weekend          Disable weekend marker
-    -V, --version             Prints version information
-
 OPTIONS:
-    -e, --easter <year>       Prints the Hex Date of easter.
-    -T, --transform <date>    Prints the Hex Date of <date>. Needs format of dd-mm-yyyy.
+    -3, --unbalanced-ternary    Use ternary representation
+    -A, --disbale-all           Disable all font effects
+    -b, --balanced-ternary      Use balanced ternary representation
+    -d, --disable               Disable day marker
+    -e, --easter <year>         Prints the Hex Date of easter.
+    -E, --effect                Enable title font effects
+    -h, --help                  Print help information
+    -T, --transform <date>      Prints the Hex Date of <date>. Needs format of dd-mm-yyyy.
+    -V, --version               Print version information
+    -W, --no-weekend            Disable weekend marker
+    -Y, --disable-year-month    Don't print year and month
 ```
 
 [![asciicast](https://asciinema.org/a/381715.svg)](https://asciinema.org/a/381715)
