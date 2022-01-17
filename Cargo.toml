@@ -1,6 +1,6 @@
 [package]
 name = "hcal"
-version = "0.3.0"
+version = "0.3.1"
 description = "Hexadecimal calendar for terminal"
 license = "MIT"
 authors = ["0xflotus"]
@@ -15,11 +15,11 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "3.0.0-beta.2"
+clap = "3.0.8"
 chrono = "0.4"
 bdays = "0.1.1"
 regex = "1"
-cbb = "0.1.14"
+cbb = "0.2.1"
 
 [[bin]]
 

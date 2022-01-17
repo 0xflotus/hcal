@@ -1,9 +1,8 @@
-#[macro_use]
 extern crate clap;
 
 use bdays::easter;
 use chrono::{Datelike, NaiveDate, Utc};
-use clap::{App, AppSettings, Arg};
+use clap::{App, Arg};
 use regex::Regex;
 use std::process;
 use std::vec::Vec;
@@ -14,17 +13,16 @@ mod helpers;
 use helpers::{cal, fmt, hex};
 
 fn main() {
-    let matches = App::new(crate_name!())
-        .setting(AppSettings::ColoredHelp)
-        .version(crate_version!())
-        .about(crate_description!())
+    let matches = App::new("hcal")
+        .version("0.3.1")
+        .about("A hexadecimal calendar for terminal")
         .arg(
             Arg::new("easter")
                 .short('e')
                 .long("easter")
                 .takes_value(true)
                 .value_name("year")
-                .about("Prints the Hex Date of easter."),
+                .help("Prints the Hex Date of easter."),
         )
         .arg(
             Arg::new("transform")
@@ -32,65 +30,65 @@ fn main() {
                 .long("transform")
                 .takes_value(true)
                 .value_name("date")
-                .about("Prints the Hex Date of <date>. Needs format of dd-mm-yyyy."),
+                .help("Prints the Hex Date of <date>. Needs format of dd-mm-yyyy."),
         )
         .arg(
             Arg::new("balanced-ternary")
                 .short('b')
                 .long("balanced-ternary")
-                .about("Use balanced ternary representation"),
+                .help("Use balanced ternary representation"),
         )
         .arg(Arg::new("unbalanced-ternary")
                 .short('3')
                 .long("unbalanced-ternary")
-                .about("Use ternary representation"),
+                .help("Use ternary representation"),
         )
         .arg(
             Arg::new("disable")
                 .short('d')
                 .long("disable")
-                .about("Disable day marker"),
+                .help("Disable day marker"),
         )
         .arg(
             Arg::new("no-weekend")
                 .short('W')
                 .long("no-weekend")
-                .about("Disable weekend marker"),
+                .help("Disable weekend marker"),
         )
         .arg(
             Arg::new("effect")
                 .short('E')
                 .long("effect")
-                .about("Enable title font effects"),
+                .help("Enable title font effects"),
         )
         .arg(
             Arg::new("disable-all")
                 .short('A')
                 .long("disbale-all")
-                .about("Disable all font effects"),
+                .help("Disable all font effects"),
         )
         .arg(Arg::new("disable-year-month")
                 .short('Y')
                 .long("disable-year-month")
-                .about("Don't print year and month"),
+                .help("Don't print year and month"),
         )
         .arg(
             Arg::new("year")
-                .about("Sets the year")
+                .help("Sets the year")
                 .required(false)
-                .index(1_u64),
+                .index(1_usize),
         )
         .arg(
             Arg::new("month")
-                .about("Sets the month")
+                .help("Sets the month")
                 .required(false)
-                .index(2_u64),
+                .index(2_usize),
         )
         .arg(
             Arg::new("day")
-                .about("Sets the day")
+                .help("Sets the day")
                 .required(false)
-                .index(3_u64),
+                .index(3_usize),
         )
         .get_matches();
 
