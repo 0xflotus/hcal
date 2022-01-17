@@ -8,7 +8,7 @@ use regex::Regex;
 use std::process;
 use std::vec::Vec;
 
-use cbb::util::cbb::int_to_bal_ternary;
+use cbb::util::cbb::{int_to_bal_ternary, int_to_unbal_ternary};
 
 mod helpers;
 use helpers::{cal, fmt, hex};
@@ -40,6 +40,11 @@ fn main() {
                 .long("balanced-ternary")
                 .about("Use balanced ternary representation"),
         )
+        .arg(Arg::new("unbalanced-ternary")
+                .short('3')
+                .long("unbalanced-ternary")
+                .about("Use ternary representation"),
+        )
         .arg(
             Arg::new("disable")
                 .short('d')
@@ -63,6 +68,11 @@ fn main() {
                 .short('A')
                 .long("disbale-all")
                 .about("Disable all font effects"),
+        )
+        .arg(Arg::new("disable-year-month")
+                .short('Y')
+                .long("disable-year-month")
+                .about("Don't print year and month"),
         )
         .arg(
             Arg::new("year")
@@ -103,7 +113,8 @@ fn main() {
                     easter_date.month(),
                     easter_date.day()
                 ),
-                matches.is_present("balanced-ternary")
+                matches.is_present("balanced-ternary"),
+                matches.is_present("unbalanced-ternary"),
             )
         );
         process::exit(0_i32);
@@ -140,7 +151,8 @@ fn main() {
                 "{}",
                 fmt::format_date(
                     (year, month, day),
-                    matches.is_present("balanced-ternary")
+                    matches.is_present("balanced-ternary"),
+                    matches.is_present("unbalanced-ternary"),
                 )
             );
             process::exit(0_i32);
@@ -159,8 +171,16 @@ fn main() {
     let show_title_font_effect = !matches
         .is_present("disable-all")
         && matches.is_present("effect");
+    let show_year_month = !matches.is_present("disable-year-month");
     let balanced_ternary_flag =
         matches.is_present("balanced-ternary");
+    let mut unbalanced_ternary_flag =
+        matches.is_present("unbalanced-ternary");
+
+    if balanced_ternary_flag {
+        // balanced ternary has precedence.
+        unbalanced_ternary_flag = false;
+    }
 
     if let Some(year) = matches.value_of("year") {
         if let Some(month) = matches.value_of("month") {
@@ -192,6 +212,8 @@ fn main() {
             show_weekend_marker,
             show_title_font_effect,
             balanced_ternary_flag,
+            unbalanced_ternary_flag,
+            show_year_month,
           );
                 } else {
                     let i32_year = year
@@ -229,6 +251,8 @@ fn main() {
                         show_weekend_marker,
                         show_title_font_effect,
                         balanced_ternary_flag,
+                        unbalanced_ternary_flag,
+                        show_year_month,
                     );
                 }
             } else if [month, year]
@@ -255,6 +279,8 @@ fn main() {
                     show_weekend_marker,
                     show_title_font_effect,
                     balanced_ternary_flag,
+                    unbalanced_ternary_flag,
+                    show_year_month,
                 );
             } else {
                 let i32_year = year
@@ -283,6 +309,8 @@ fn main() {
                     show_weekend_marker,
                     show_title_font_effect,
                     balanced_ternary_flag,
+                    unbalanced_ternary_flag,
+                    show_year_month,
                 );
             }
         } else {
@@ -298,6 +326,8 @@ fn main() {
             show_weekend_marker,
             show_title_font_effect,
             balanced_ternary_flag,
+            unbalanced_ternary_flag,
+            show_year_month,
         );
     }
 }
@@ -310,6 +340,8 @@ fn hcal(
     show_weekend: bool,
     effect: bool,
     balanced_ternary: bool,
+    unbalanced_ternary: bool,
+    show_year_month: bool,
 ) {
     let now = NaiveDate::from_ymd(year, month, day);
     let year = now.year();
@@ -320,18 +352,28 @@ fn hcal(
             .weekday()
             .num_days_from_monday();
 
-    if balanced_ternary {
-        println!(
-            "\t\t\t{}\n\t\t\t  {}\n",
-            int_to_bal_ternary(year as i128),
-            int_to_bal_ternary(month as i128)
-        );
-    } else {
-        println!(
-            "\t\t\t{}\n\t\t\t  {}\n",
-            format!("{:#06x}", year),
-            format!("{:02x}", month)
-        );
+    if show_year_month {
+        if balanced_ternary {
+            println!(
+                "\t\t\t{}\n\t\t\t  {}\n",
+                int_to_bal_ternary(year as i128),
+                int_to_bal_ternary(month as i128)
+            );
+        }
+        else if unbalanced_ternary {
+            println!(
+                "\t\t\t{}\n\t\t\t  {}\n",
+                int_to_unbal_ternary(year as i128),
+                int_to_unbal_ternary(month as i128)
+            );
+        }
+        else {
+            println!(
+                "\t\t\t{}\n\t\t\t  {}\n",
+                format!("{:#06x}", year),
+                format!("{:02x}", month)
+            );
+        }
     }
 
     println!("{}", headline(effect));
@@ -344,6 +386,7 @@ fn hcal(
             show_day,
             show_weekend,
             balanced_ternary,
+            unbalanced_ternary,
         ));
     }
     println!(
@@ -360,6 +403,7 @@ fn hcal(
             show_day,
             show_weekend,
             balanced_ternary,
+            unbalanced_ternary,
         ));
     }
     println!("{}", vec.join("\t"));
@@ -372,6 +416,7 @@ fn hcal(
             show_day,
             show_weekend,
             balanced_ternary,
+            unbalanced_ternary,
         ));
     }
     println!("{}", vec.join("\t"));
@@ -384,6 +429,7 @@ fn hcal(
             show_day,
             show_weekend,
             balanced_ternary,
+            unbalanced_ternary,
         ));
     }
     println!("{}", vec.join("\t"));
@@ -405,6 +451,7 @@ fn hcal(
                 show_day,
                 show_weekend,
                 balanced_ternary,
+                unbalanced_ternary,
             ));
         }
         println!("{}", vec.join("\t"));
@@ -416,6 +463,7 @@ fn hcal(
                 show_day,
                 show_weekend,
                 balanced_ternary,
+                unbalanced_ternary,
             ));
         }
         println!("{}", vec.join("\t"));
@@ -432,6 +480,7 @@ fn hcal(
                 show_day,
                 show_weekend,
                 balanced_ternary,
+                unbalanced_ternary,
             ));
         }
         println!("{}", vec.join("\t"));
@@ -452,6 +501,7 @@ fn mark(
     show_day: bool,
     show_weekend: bool,
     balanced_ternary: bool,
+    unbalanced_ternary: bool,
 ) -> std::string::String {
     use chrono::Weekday;
     let the_day = NaiveDate::from_ymd(
@@ -466,7 +516,14 @@ fn mark(
                 "\u{001b}[41m{}\u{001b}[0m",
                 int_to_bal_ternary(date_tuple.2 as i128)
             );
-        } else {
+        }
+        else if unbalanced_ternary {
+            return format!(
+                "\u{001b}[41m{}\u{001b}[0m",
+                int_to_unbal_ternary(date_tuple.2 as i128)
+            );
+        }
+        else {
             return format!(
                 "\u{001b}[41m{:#04x}\u{001b}[0m",
                 date_tuple.2
@@ -481,7 +538,14 @@ fn mark(
                 "\u{001b}[7m{}\u{001b}[0m",
                 int_to_bal_ternary(date_tuple.2 as i128)
             );
-        } else {
+        } 
+        else if unbalanced_ternary {
+            return format!(
+                "\u{001b}[7m{}\u{001b}[0m",
+                int_to_unbal_ternary(date_tuple.2 as i128)
+            );
+        }
+        else {
             return format!(
                 "\u{001b}[7m{:#04x}\u{001b}[0m",
                 date_tuple.2
@@ -493,7 +557,14 @@ fn mark(
                 "{}",
                 int_to_bal_ternary(date_tuple.2 as i128)
             );
-        } else {
+        } 
+        else if unbalanced_ternary {
+            return format!(
+                "{}",
+                int_to_unbal_ternary(date_tuple.2 as i128)
+            );
+        }
+        else {
             return format!("{:#04x}", date_tuple.2);
         }
     }
