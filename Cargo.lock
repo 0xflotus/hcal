@@ -45,9 +45,9 @@ checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
 name = "cbb"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c5d6b96d4932f785a527fdf8ced2530f3d772a08f00d9ff643278e34698687d"
+checksum = "c13faff89f4d329c8eb85098f4dfe2554f685dbf4d3ec42a761915f4bdd4ee3e"
 dependencies = [
  "clap",
  "num",
@@ -90,7 +90,7 @@ checksum = "d7afe4a420e3fe79967a00898cc1f4db7c8a49a9333a29f8a4bd76a253d5cd04"
 
 [[package]]
 name = "hcal"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "bdays",
  "cbb",
