@@ -14,7 +14,7 @@ use helpers::{cal, fmt, hex};
 
 fn main() {
     let matches = App::new("hcal")
-        .version("0.3.1")
+        .version("0.3.3")
         .about("A hexadecimal calendar for terminal")
         .arg(
             Arg::new("easter")
