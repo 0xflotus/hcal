@@ -4,6 +4,8 @@
 
 A hexadecimal calendar in terminal for programmers
 
+![hexadecimal](./docs/hexadecimal.png)
+
 ## Installation
 
 `cargo install hcal`
@@ -37,3 +39,7 @@ OPTIONS:
 ```
 
 [![asciicast](https://asciinema.org/a/381715.svg)](https://asciinema.org/a/381715)
+
+### Balanced Ternary Support
+
+![balanced ternary](./docs/balanced_ternary.png)
