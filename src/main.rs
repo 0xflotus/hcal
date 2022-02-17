@@ -2,7 +2,7 @@ extern crate clap;
 
 use bdays::easter;
 use chrono::{Datelike, NaiveDate, Utc};
-use clap::{App, Arg};
+use clap::{Command, Arg};
 use regex::Regex;
 use std::process;
 use std::vec::Vec;
@@ -13,8 +13,8 @@ mod helpers;
 use helpers::{cal, fmt, hex};
 
 fn main() {
-    let matches = App::new("hcal")
-        .version("0.3.3")
+    let matches = Command::new("hcal")
+        .version("0.3.4")
         .about("A hexadecimal calendar for terminal")
         .arg(
             Arg::new("easter")
