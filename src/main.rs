@@ -2,7 +2,6 @@ extern crate clap;
 
 use bdays::easter;
 use chrono::{Datelike, NaiveDate, Utc};
-use clap::{Arg, Command};
 use regex::Regex;
 use std::process;
 use std::vec::Vec;
@@ -14,87 +13,73 @@ use cbb::util::cbb::{
 mod helpers;
 use helpers::{cal, fmt, hex};
 
+use clap::{Arg, ArgAction, Command};
+
 fn main() {
-    let matches = Command::new("hcal")
-        .version("0.3.5")
-        .about("A hexadecimal calendar for terminal")
+    let matches = Command::new("hcal").version("0.4.0").about("A hexadecimal calendar for terminal")
+        .arg(Arg::new("year").help("Sets the year"))
+        .arg(Arg::new("month").help("Sets the month"))
+        .arg(Arg::new("day").help("Sets the day"))
         .arg(
+            Arg::new("unbalanced-ternary")
+                .short('3')
+                .long("unbalanced-ternary")
+                .help("Use ternary representation")
+                .action(ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("disable-all")
+                .short('A')
+                .long("disable-all")
+                .help("Disable all font effects")
+                .action(ArgAction::SetTrue),
+        ) .arg(
+            Arg::new("balanced-ternary")
+                .short('b')
+                .long("balanced-ternary")
+                .help("Use balanced ternary representation")
+                .action(ArgAction::SetTrue),
+        ).arg(
+            Arg::new("disable")
+                .short('d')
+                .long("disable")
+                .help("Disable day marker")
+                .action(ArgAction::SetTrue),
+        ).arg(
             Arg::new("easter")
                 .short('e')
                 .long("easter")
-                .takes_value(true)
-                .value_name("year")
-                .help("Prints the Hex Date of easter."),
+                .help("Prints the Hex Date of easter.")
+        ).arg(
+            Arg::new("effect")
+                .short('E')
+                .long("effect")
+                .help("Enable title font effects")
+                .action(ArgAction::SetTrue),
+        ).arg(
+            Arg::new("no-weekend")
+                .short('W')
+                .long("no-weekend")
+                .help("Disable weekend marker")
+                .action(ArgAction::SetTrue),
+        ).arg(
+            Arg::new("disable-year-month")
+                .short('Y')
+                .long("disable-year-month")
+                .help("Don't print year and month")
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("transform")
                 .short('T')
                 .long("transform")
-                .takes_value(true)
-                .value_name("date")
-                .help("Prints the Hex Date of <date>. Needs format of dd-mm-yyyy."),
-        )
-        .arg(
-            Arg::new("balanced-ternary")
-                .short('b')
-                .long("balanced-ternary")
-                .help("Use balanced ternary representation"),
-        )
-        .arg(Arg::new("unbalanced-ternary")
-                .short('3')
-                .long("unbalanced-ternary")
-                .help("Use ternary representation"),
-        )
-        .arg(
-            Arg::new("disable")
-                .short('d')
-                .long("disable")
-                .help("Disable day marker"),
-        )
-        .arg(
-            Arg::new("no-weekend")
-                .short('W')
-                .long("no-weekend")
-                .help("Disable weekend marker"),
-        )
-        .arg(
-            Arg::new("effect")
-                .short('E')
-                .long("effect")
-                .help("Enable title font effects"),
-        )
-        .arg(
-            Arg::new("disable-all")
-                .short('A')
-                .long("disbale-all")
-                .help("Disable all font effects"),
-        )
-        .arg(Arg::new("disable-year-month")
-                .short('Y')
-                .long("disable-year-month")
-                .help("Don't print year and month"),
-        )
-        .arg(
-            Arg::new("year")
-                .help("Sets the year")
-                .required(false)
-                .index(1_usize),
-        )
-        .arg(
-            Arg::new("month")
-                .help("Sets the month")
-                .required(false)
-                .index(2_usize),
-        )
-        .arg(
-            Arg::new("day")
-                .help("Sets the day")
-                .required(false)
-                .index(3_usize),
+                .help("Prints the Hex Date of <date>. Needs format of dd-mm-yyyy.")
         )
         .get_matches();
 
-    if let Some(easter) = matches.value_of("easter") {
+    if let Some(easter) =
+        matches.get_one::<String>("easter")
+    {
         let easter_date = easter::easter_naive_date(
             easter.parse::<i32>().unwrap_or_else(|_| {
                 println!("Error while parsing year");
@@ -113,14 +98,16 @@ fn main() {
                     easter_date.month(),
                     easter_date.day()
                 ),
-                matches.is_present("balanced-ternary"),
-                matches.is_present("unbalanced-ternary"),
+                matches.get_flag("balanced-ternary"),
+                matches.get_flag("unbalanced-ternary"),
             )
         );
         process::exit(0_i32);
     }
 
-    if let Some(date) = matches.value_of("transform") {
+    if let Some(date) =
+        matches.get_one::<String>("transform")
+    {
         let re = Regex::new(r"^\d{2}-\d{2}-\d{4}$")
             .unwrap_or_else(|_| {
                 println!("Error while parsing date");
@@ -151,9 +138,8 @@ fn main() {
                 "{}",
                 fmt::format_date(
                     (year, month, day),
-                    matches.is_present("balanced-ternary"),
-                    matches
-                        .is_present("unbalanced-ternary"),
+                    matches.get_flag("balanced-ternary"),
+                    matches.get_flag("unbalanced-ternary"),
                 )
             );
             process::exit(0_i32);
@@ -164,29 +150,33 @@ fn main() {
     }
 
     let show_day_marker = !(matches
-        .is_present("disable-all")
-        || matches.is_present("disable"));
+        .get_flag("disable-all")
+        || matches.get_flag("disable"));
     let show_weekend_marker = !(matches
-        .is_present("disable-all")
-        || matches.is_present("no-weekend"));
+        .get_flag("disable-all")
+        || matches.get_flag("no-weekend"));
     let show_title_font_effect = !matches
-        .is_present("disable-all")
-        && matches.is_present("effect");
+        .get_flag("disable-all")
+        && matches.get_flag("effect");
     let show_year_month =
-        !matches.is_present("disable-year-month");
+        !matches.get_flag("disable-year-month");
     let balanced_ternary_flag =
-        matches.is_present("balanced-ternary");
+        matches.get_flag("balanced-ternary");
     let mut unbalanced_ternary_flag =
-        matches.is_present("unbalanced-ternary");
+        matches.get_flag("unbalanced-ternary");
 
     if balanced_ternary_flag {
         // balanced ternary has precedence.
         unbalanced_ternary_flag = false;
     }
 
-    if let Some(year) = matches.value_of("year") {
-        if let Some(month) = matches.value_of("month") {
-            if let Some(day) = matches.value_of("day") {
+    if let Some(year) = matches.get_one::<String>("year") {
+        if let Some(month) =
+            matches.get_one::<String>("month")
+        {
+            if let Some(day) =
+                matches.get_one::<String>("day")
+            {
                 if [day, month, year]
                     .iter()
                     .all(|&elem| elem.starts_with("0x"))
