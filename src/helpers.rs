@@ -6,7 +6,7 @@ pub mod cal {
         year: i32,
         month: u32,
     ) -> i64 {
-        NaiveDate::from_ymd(
+        NaiveDate::from_ymd_opt(
             match month {
                 0xc_u32 => year + 1_i32,
                 _ => year,
@@ -17,9 +17,11 @@ pub mod cal {
             },
             1_u32,
         )
-        .signed_duration_since(NaiveDate::from_ymd(
-            year, month, 1_u32,
-        ))
+        .unwrap()
+        .signed_duration_since(
+            NaiveDate::from_ymd_opt(year, month, 1_u32)
+                .unwrap(),
+        )
         .num_days()
     }
 }
@@ -40,7 +42,9 @@ pub mod hex {
 }
 
 pub mod fmt {
-    use cbb::util::cbb::{int_to_bal_ternary, int_to_unbal_ternary};
+    use cbb::util::cbb::{
+        int_to_bal_ternary, int_to_unbal_ternary,
+    };
     pub fn format_date(
         date: (i32, u32, u32),
         balanced_ternary: bool,
@@ -53,16 +57,14 @@ pub mod fmt {
                 int_to_bal_ternary(date.1 as i128),
                 int_to_bal_ternary(date.2 as i128),
             );
-        }
-        else if unbalanced_ternary {
+        } else if unbalanced_ternary {
             return format!(
                 "{}:{}:{}",
                 int_to_unbal_ternary(date.0 as i128),
                 int_to_unbal_ternary(date.1 as i128),
                 int_to_unbal_ternary(date.2 as i128),
             );
-        }
-        else {
+        } else {
             return format!(
                 "{:#06x}-{:#04x}-{:#04x}",
                 date.0, date.1, date.2

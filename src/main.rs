@@ -2,12 +2,14 @@ extern crate clap;
 
 use bdays::easter;
 use chrono::{Datelike, NaiveDate, Utc};
-use clap::{Command, Arg};
+use clap::{Arg, Command};
 use regex::Regex;
 use std::process;
 use std::vec::Vec;
 
-use cbb::util::cbb::{int_to_bal_ternary, int_to_unbal_ternary};
+use cbb::util::cbb::{
+    int_to_bal_ternary, int_to_unbal_ternary,
+};
 
 mod helpers;
 use helpers::{cal, fmt, hex};
@@ -150,7 +152,8 @@ fn main() {
                 fmt::format_date(
                     (year, month, day),
                     matches.is_present("balanced-ternary"),
-                    matches.is_present("unbalanced-ternary"),
+                    matches
+                        .is_present("unbalanced-ternary"),
                 )
             );
             process::exit(0_i32);
@@ -169,7 +172,8 @@ fn main() {
     let show_title_font_effect = !matches
         .is_present("disable-all")
         && matches.is_present("effect");
-    let show_year_month = !matches.is_present("disable-year-month");
+    let show_year_month =
+        !matches.is_present("disable-year-month");
     let balanced_ternary_flag =
         matches.is_present("balanced-ternary");
     let mut unbalanced_ternary_flag =
@@ -341,12 +345,14 @@ fn hcal(
     unbalanced_ternary: bool,
     show_year_month: bool,
 ) {
-    let now = NaiveDate::from_ymd(year, month, day);
+    let now =
+        NaiveDate::from_ymd_opt(year, month, day).unwrap();
     let year = now.year();
     let month = now.month();
     let day = now.day();
     let days_from_monday =
-        NaiveDate::from_ymd(year as i32, month, 1_u32)
+        NaiveDate::from_ymd_opt(year as i32, month, 1_u32)
+            .unwrap()
             .weekday()
             .num_days_from_monday();
 
@@ -357,15 +363,13 @@ fn hcal(
                 int_to_bal_ternary(year as i128),
                 int_to_bal_ternary(month as i128)
             );
-        }
-        else if unbalanced_ternary {
+        } else if unbalanced_ternary {
             println!(
                 "\t\t\t{}\n\t\t\t  {}\n",
                 int_to_unbal_ternary(year as i128),
                 int_to_unbal_ternary(month as i128)
             );
-        }
-        else {
+        } else {
             println!(
                 "\t\t\t{}\n\t\t\t  {}\n",
                 format!("{:#06x}", year),
@@ -502,11 +506,12 @@ fn mark(
     unbalanced_ternary: bool,
 ) -> std::string::String {
     use chrono::Weekday;
-    let the_day = NaiveDate::from_ymd(
+    let the_day = NaiveDate::from_ymd_opt(
         date_tuple.0,
         date_tuple.1,
         date_tuple.2,
-    );
+    )
+    .unwrap();
     let weekday = the_day.weekday();
     if date_tuple.2 == day && show_day {
         if balanced_ternary {
@@ -514,14 +519,12 @@ fn mark(
                 "\u{001b}[41m{}\u{001b}[0m",
                 int_to_bal_ternary(date_tuple.2 as i128)
             );
-        }
-        else if unbalanced_ternary {
+        } else if unbalanced_ternary {
             return format!(
                 "\u{001b}[41m{}\u{001b}[0m",
                 int_to_unbal_ternary(date_tuple.2 as i128)
             );
-        }
-        else {
+        } else {
             return format!(
                 "\u{001b}[41m{:#04x}\u{001b}[0m",
                 date_tuple.2
@@ -536,14 +539,12 @@ fn mark(
                 "\u{001b}[7m{}\u{001b}[0m",
                 int_to_bal_ternary(date_tuple.2 as i128)
             );
-        } 
-        else if unbalanced_ternary {
+        } else if unbalanced_ternary {
             return format!(
                 "\u{001b}[7m{}\u{001b}[0m",
                 int_to_unbal_ternary(date_tuple.2 as i128)
             );
-        }
-        else {
+        } else {
             return format!(
                 "\u{001b}[7m{:#04x}\u{001b}[0m",
                 date_tuple.2
@@ -555,14 +556,12 @@ fn mark(
                 "{}",
                 int_to_bal_ternary(date_tuple.2 as i128)
             );
-        } 
-        else if unbalanced_ternary {
+        } else if unbalanced_ternary {
             return format!(
                 "{}",
                 int_to_unbal_ternary(date_tuple.2 as i128)
             );
-        }
-        else {
+        } else {
             return format!("{:#04x}", date_tuple.2);
         }
     }

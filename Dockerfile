@@ -1,4 +1,4 @@
-FROM clux/muslrust:1.58.0-stable as builder
+FROM clux/muslrust:1.75.0 as builder
 WORKDIR /volume
 COPY . .
 RUN cargo build --release
