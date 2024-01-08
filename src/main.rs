@@ -16,7 +16,7 @@ use helpers::{cal, fmt, hex};
 
 fn main() {
     let matches = Command::new("hcal")
-        .version("0.3.4")
+        .version("0.3.5")
         .about("A hexadecimal calendar for terminal")
         .arg(
             Arg::new("easter")
