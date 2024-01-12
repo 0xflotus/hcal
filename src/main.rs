@@ -16,7 +16,7 @@ use helpers::{cal, fmt, hex};
 use clap::{Arg, ArgAction, Command};
 
 fn main() {
-    let matches = Command::new("hcal").version("0.4.0").about("A hexadecimal calendar for terminal")
+    let matches = Command::new("hcal").version("0.4.1").about("A hexadecimal calendar for terminal")
         .arg(Arg::new("year").help("Sets the year"))
         .arg(Arg::new("month").help("Sets the month"))
         .arg(Arg::new("day").help("Sets the day"))
