@@ -3,7 +3,7 @@ WORKDIR /volume
 COPY . .
 RUN cargo build --release
 
-FROM alpine
+FROM alpine:3.19
 COPY --from=builder /volume/target/x86_64-unknown-linux-musl/release/hcal .
 ENTRYPOINT [ "/hcal" ]
 
